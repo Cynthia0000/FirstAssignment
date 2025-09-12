@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/edittext_background">
+
+    <!-- 单词和翻译行 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/wordTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="word"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/translationTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="翻译"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:gravity="right" />
+
+    </LinearLayout>
+
+    <!-- 单词类别 -->
+    <TextView
+        android:id="@+id/categoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="类别"
+        android:textSize="12sp"
+        android:textColor="@color/darkGray"
+        android:background="@color/gray"
+        android:padding="4dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- 例句 -->
+    <TextView
+        android:id="@+id/exampleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="例句"
+        android:textSize="14sp"
+        android:textColor="@color/darkGray"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+</LinearLayout>

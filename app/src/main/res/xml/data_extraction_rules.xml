@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules xmlns:android="http://schemas.android.com/apk/res/android">
+    <cloud-backup>
+        <!-- Include files in the manifest, resources, and assets directories -->
+        <include domain="manifest" path="/@xml/data_extraction_rules" />
+        <!-- Exclude files that might contain sensitive data -->
+        <exclude domain="sharedpref" path="*.xml" />
+        <exclude domain="database" path="*.db" />
+    </cloud-backup>
+    <device-transfer>
+        <!-- Include all data for device transfer -->
+        <include domain="all" />
+    </device-transfer>
+</data-extraction-rules>

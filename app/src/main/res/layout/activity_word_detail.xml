@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- 自定义标题栏 -->
+    <com.example.firstassignment.CustomTitleBar
+        android:id="@+id/customTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- 内容区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- 单词显示 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/edittext_background"
+            android:padding="20dp" />
+
+        <!-- 单词卡片 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/edittext_background"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- 单词和发音 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/wordTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="24sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="word" />
+                <TextView
+                    android:id="@+id/pronunciationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="点击播放发音"
+                    android:clickable="true"
+                    android:cursorVisible="true" />
+            </LinearLayout>
+
+            <!-- 翻译 -->
+            <TextView
+                android:id="@+id/translationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:text="translation" />
+
+            <!-- 单词类别 -->
+            <TextView
+                android:id="@+id/categoryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="5dp"
+                android:text="category" />
+
+            <!-- 例句 -->
+            <TextView
+                android:id="@+id/exampleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="15dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:text="example sentence" />
+        </LinearLayout>
+
+        <!-- 导航按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <Button
+                android:id="@+id/previousButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="上一个"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background"
+                android:layout_marginRight="10dp" />
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="下一个"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background" />
+        </LinearLayout>
+
+        <!-- 返回按钮 -->
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="返回单词列表"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background" />
+
+    </LinearLayout>
+</LinearLayout>

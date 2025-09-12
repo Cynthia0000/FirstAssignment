@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">First Assignment</string>
+    <string name="login_title">用户登录</string>
+    <string name="welcome_title">用户主页</string>
+    <string name="username_hint">请输入用户名</string>
+    <string name="password_hint">请输入密码</string>
+    <string name="login_button_text">登录</string>
+    <string name="welcome_message">欢迎，%s！</string>
+</resources>

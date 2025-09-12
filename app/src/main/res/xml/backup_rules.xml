@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Include files in the manifest, resources, and assets directories -->
+    <include domain="manifest" path="/@xml/backup_rules" />
+    <!-- Exclude files that might contain sensitive data -->
+    <exclude domain="sharedpref" path="*.xml" />
+    <exclude domain="database" path="*.db" />
+</full-backup-content>
