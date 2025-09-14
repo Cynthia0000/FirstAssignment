@@ -48,11 +48,15 @@ public class SecondActivity extends AppCompatActivity {
         // 设置自定义标题栏的标题
         customTitleBar.setTitle("用户主页");
 
-        // 返回按钮点击事件
+        // 返回登录界面按钮点击事件（退出登录）
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                // 退出登录，清除当前活动栈并返回登录页面
+                Intent intent = new Intent(SecondActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // 结束当前活动
             }
         });
 

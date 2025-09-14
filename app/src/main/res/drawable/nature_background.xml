@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="1200dp"
+    android:viewportWidth="800"
+    android:viewportHeight="1200"
+    android:alpha="0.7">
+
+    <!-- 使用纯色背景替代渐变 -->
+    <path
+        android:pathData="M0,0 L800,0 L800,1200 L0,1200 Z"
+        android:fillColor="@color/colorPrimary" />
+
+    <!-- 简化的自然元素 - 远山 -->
+    <path
+        android:pathData="M0,500 L200,400 L400,550 L600,450 L800,500 L800,1200 L0,1200 Z"
+        android:fillColor="#0ABAB5" />
+
+    <!-- 简化的自然元素 - 近山 -->
+    <path
+        android:pathData="M0,700 L250,600 L500,750 L750,650 L800,700 L800,1200 L0,1200 Z"
+        android:fillColor="#089995" />
+
+    <!-- 装饰性圆形元素，模拟气泡或水滴效果 -->
+    <!-- 修改：移除了cx, cy, r属性中的android:前缀 -->
+    <circle
+        cx="100"
+        cy="200"
+        r="30"
+        android:fillColor="#FFFFFF"
+        android:alpha="0.3" />
+
+    <circle
+        cx="700"
+        cy="300"
+        r="25"
+        android:fillColor="#FFFFFF"
+        android:alpha="0.2" />
+
+    <circle
+        cx="400"
+        cy="150"
+        r="20"
+        android:fillColor="#FFFFFF"
+        android:alpha="0.25" />
+</vector>

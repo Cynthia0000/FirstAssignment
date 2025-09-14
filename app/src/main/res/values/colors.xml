@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="primaryColor">#3F51B5</color>
+    <!-- Tiffany绿色主题 -->
+    <color name="tiffanyGreen">#0ABAB5</color>
+    <color name="tiffanyGreenDark">#089995</color>
+    <color name="tiffanyGreenLight">#4DD0E1</color>
+
+    <!-- 更新应用主要颜色 -->
+    <color name="colorPrimary">#0ABAB5</color>
+    <color name="colorPrimaryDark">#089995</color>
+    <color name="colorAccent">#4DD0E1</color>
+    <color name="primaryColor">#0ABAB5</color>
+
+    <!-- 基础颜色 -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="gray">#F5F5F5</color>
     <color name="darkGray">#757575</color>
+
+    <!-- 背景相关颜色 -->
+    <color name="backgroundOverlay">#80FFFFFF</color> <!-- 半透明白色，用于覆盖在背景图上 -->
 </resources>
