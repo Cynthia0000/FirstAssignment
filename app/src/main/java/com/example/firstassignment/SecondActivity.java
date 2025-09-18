@@ -18,6 +18,7 @@ public class SecondActivity extends AppCompatActivity {
     private Button backButton;
     private Button changeAvatarButton;
     private Button startLearningButton;
+    private Button chatButton;
     private CustomTitleBar customTitleBar;
     private String username;
     private int currentAvatarResource;
@@ -33,6 +34,7 @@ public class SecondActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         changeAvatarButton = findViewById(R.id.changeAvatarButton);
         startLearningButton = findViewById(R.id.startLearningButton);
+        chatButton = findViewById(R.id.chatButton);
         customTitleBar = findViewById(R.id.customTitleBar);
 
         // 获取从MainActivity传递过来的用户名和头像信息
@@ -100,6 +102,21 @@ public class SecondActivity extends AppCompatActivity {
                 }
                 userAvatarImageView.setImageResource(currentAvatarResource);
                 Toast.makeText(SecondActivity.this, "头像已更换", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // AI聊天按钮点击事件
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 显示点击反馈
+                Toast.makeText(SecondActivity.this, "正在打开AI聊天界面...", Toast.LENGTH_SHORT).show();
+
+                // 创建Intent并启动ChatActivity
+                Intent intent = new Intent(SecondActivity.this, ChatActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("avatarResource", currentAvatarResource);
+                startActivity(intent);
             }
         });
     }

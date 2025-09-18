@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="返回"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:background="@drawable/edittext_background" />
 
     </LinearLayout>
