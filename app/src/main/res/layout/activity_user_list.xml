@@ -13,12 +13,42 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="返回"
-        android:layout_marginBottom="16dp" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返回"
+            android:layout_marginEnd="8dp" />
+    </LinearLayout>
+
+    <!-- 搜索用户 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/search_username_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="输入用户名搜索"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="搜索"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/user_list_view"

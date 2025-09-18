@@ -57,6 +57,17 @@ public class WordListActivity extends AppCompatActivity {
             }
         });
 
+
+
+        // 学习统计按钮点击事件
+        findViewById(R.id.statisticsButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WordListActivity.this, StatisticsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // 开始学习按钮点击事件
         startLearningButton.setOnClickListener(new View.OnClickListener() {
             @Override

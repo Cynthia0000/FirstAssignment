@@ -41,6 +41,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_USER_ID_FK = "user_id";
 
+    // 学习记录表
+    public static final String TABLE_LEARNING_RECORDS = "learning_records";
+    public static final String COLUMN_RECORD_ID = "_id";
+    public static final String COLUMN_RECORD_USER_ID = "user_id";
+    public static final String COLUMN_RECORD_WORD_ID = "word_id";
+    public static final String COLUMN_RECORD_SCORE = "score";
+    public static final String COLUMN_RECORD_STATUS = "status";
+    public static final String COLUMN_RECORD_REVIEW_COUNT = "review_count";
+
     // 创建用户表的SQL语句
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" +
             COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -68,6 +77,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")" +
             ");";
 
+    // 创建学习记录表的SQL语句
+    private static final String CREATE_TABLE_LEARNING_RECORDS = "CREATE TABLE " + TABLE_LEARNING_RECORDS + "(" +
+            COLUMN_RECORD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_RECORD_USER_ID + " INTEGER NOT NULL, " +
+            COLUMN_RECORD_WORD_ID + " INTEGER NOT NULL, " +
+            COLUMN_RECORD_SCORE + " INTEGER NOT NULL, " +
+            COLUMN_TIMESTAMP + " INTEGER NOT NULL, " +
+            COLUMN_RECORD_STATUS + " TEXT NOT NULL, " +
+            COLUMN_RECORD_REVIEW_COUNT + " INTEGER NOT NULL, " +
+            "FOREIGN KEY(" + COLUMN_RECORD_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "), " +
+            "FOREIGN KEY(" + COLUMN_RECORD_WORD_ID + ") REFERENCES " + TABLE_WORDS + "(" + COLUMN_WORD_ID + ")" +
+            ");";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -78,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_WORDS);
         db.execSQL(CREATE_TABLE_MESSAGES);
+        db.execSQL(CREATE_TABLE_LEARNING_RECORDS);
 
         // 初始化单词数据
         initializeWordData(db);
@@ -91,6 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORDS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LEARNING_RECORDS);
         onCreate(db);
     }
 
@@ -101,17 +125,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 插入示例单词数据
         String[] words = {
                 "apple", "banana", "book", "computer", "friend",
-                "happy", "learn", "music", "phone", "study"
+                "happy", "learn", "music", "phone", "study",
+                "cat", "dog", "house", "water", "food",
+                "time", "weather", "family", "school", "work"
         };
 
         String[] translations = {
                 "苹果", "香蕉", "书", "电脑", "朋友",
-                "快乐的", "学习", "音乐", "手机", "学习"
+                "快乐的", "学习", "音乐", "手机", "学习",
+                "猫", "狗", "房子", "水", "食物",
+                "时间", "天气", "家庭", "学校", "工作"
         };
 
         String[] categories = {
                 "水果", "水果", "学习用品", "电子产品", "人际关系",
-                "情绪", "行为", "艺术", "电子产品", "行为"
+                "情绪", "行为", "艺术", "电子产品", "行为",
+                "动物", "动物", "建筑", "自然", "食物",
+                "时间", "自然现象", "人际关系", "教育", "职业"
         };
 
         String[] examples = {
@@ -124,7 +154,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "It''s never too late to learn.", // 注意：这里是两个单引号
                 "I enjoy listening to music in my free time.",
                 "My phone is an essential part of my daily life.",
-                "We need to study hard to achieve our goals."
+                "We need to study hard to achieve our goals.",
+                "The cat is sleeping on the sofa.",
+                "The dog is running in the park.",
+                "We live in a beautiful house.",
+                "Drinking enough water is good for health.",
+                "I'm hungry and need some food.",
+                "Time flies when you're having fun.",
+                "The weather is nice today, let's go outside.",
+                "Family is the most important thing in life.",
+                "I go to school every weekday.",
+                "I love my job and work hard every day."
         };
 
         // 插入数据

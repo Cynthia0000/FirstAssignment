@@ -154,20 +154,36 @@
             android:gravity="center"
             android:layout_marginBottom="20dp" />
 
-        <Button
-            android:id="@+id/startLearningButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="开始学习"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:background="@drawable/button_background"
-            android:layout_marginBottom="20dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <Button
+                android:id="@+id/startLearningButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开始学习"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background"
+                android:layout_marginRight="10dp" />
+            <Button
+                android:id="@+id/statisticsButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="学习统计"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background" />
+        </LinearLayout>
 
         <!-- 使用ListView显示单词列表 -->
         <ListView
             android:id="@+id/wordListView"
-            android:layout_width="match_parent"
+            android:layout_width="390dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:divider="@color/gray"
@@ -188,7 +204,7 @@
             android:layout_height="wrap_content"
             android:text="返回主页"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:background="@drawable/edittext_background" />
 
     </LinearLayout>

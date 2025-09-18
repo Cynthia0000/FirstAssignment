@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 数据管理器，封装对数据库的增删查改操作
@@ -204,12 +206,13 @@ public class DataManager {
                     int exampleIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_EXAMPLE);
 
                     if (wordIndex != -1 && translationIndex != -1 && categoryIndex != -1 && exampleIndex != -1) {
+                        int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_WORD_ID));
                         String word = cursor.getString(wordIndex);
                         String translation = cursor.getString(translationIndex);
                         String category = cursor.getString(categoryIndex);
                         String example = cursor.getString(exampleIndex);
 
-                        wordList.add(new Word(word, translation, category, example));
+                        wordList.add(new Word(id, word, translation, category, example));
                     }
                 } while (cursor.moveToNext());
             }
@@ -429,5 +432,294 @@ public class DataManager {
         }
 
         return userList;
+    }
+
+    /**
+     * 添加学习记录
+     * @param learningRecord 学习记录对象
+     * @return 添加是否成功
+     */
+    public boolean addLearningRecord(LearningRecord learningRecord) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_RECORD_USER_ID, learningRecord.getUserId());
+        values.put(DatabaseHelper.COLUMN_RECORD_WORD_ID, learningRecord.getWordId());
+        values.put(DatabaseHelper.COLUMN_RECORD_SCORE, learningRecord.getScore());
+        values.put(DatabaseHelper.COLUMN_TIMESTAMP, learningRecord.getTimestamp());
+        values.put(DatabaseHelper.COLUMN_RECORD_STATUS, learningRecord.getStatus());
+        values.put(DatabaseHelper.COLUMN_RECORD_REVIEW_COUNT, learningRecord.getReviewCount());
+
+        try {
+            long result = database.insert(DatabaseHelper.TABLE_LEARNING_RECORDS, null, values);
+            return result != -1;
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding learning record: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 更新学习记录
+     * @param learningRecord 学习记录对象
+     * @return 更新是否成功
+     */
+    public boolean updateLearningRecord(LearningRecord learningRecord) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_RECORD_SCORE, learningRecord.getScore());
+        values.put(DatabaseHelper.COLUMN_TIMESTAMP, learningRecord.getTimestamp());
+        values.put(DatabaseHelper.COLUMN_RECORD_STATUS, learningRecord.getStatus());
+        values.put(DatabaseHelper.COLUMN_RECORD_REVIEW_COUNT, learningRecord.getReviewCount());
+
+        try {
+            int result = database.update(
+                    DatabaseHelper.TABLE_LEARNING_RECORDS,
+                    values,
+                    DatabaseHelper.COLUMN_RECORD_ID + " = ?",
+                    new String[]{String.valueOf(learningRecord.getId())}
+            );
+            return result > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating learning record: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 获取用户的学习记录
+     * @param userId 用户ID
+     * @return 学习记录列表
+     */
+    public List<LearningRecord> getUserLearningRecords(int userId) {
+        List<LearningRecord> records = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT * FROM " + DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ? ORDER BY " + DatabaseHelper.COLUMN_TIMESTAMP + " DESC";
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int idIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_ID);
+                    int userIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_USER_ID);
+                    int wordIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_WORD_ID);
+                    int scoreIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_SCORE);
+                    int timestampIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_TIMESTAMP);
+                    int statusIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_STATUS);
+                    int reviewCountIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_REVIEW_COUNT);
+
+                    if (idIndex != -1 && userIdIndex != -1 && wordIdIndex != -1 && scoreIndex != -1 &&
+                            timestampIndex != -1 && statusIndex != -1 && reviewCountIndex != -1) {
+                        int id = cursor.getInt(idIndex);
+                        int dbUserId = cursor.getInt(userIdIndex);
+                        int wordId = cursor.getInt(wordIdIndex);
+                        int score = cursor.getInt(scoreIndex);
+                        long timestamp = cursor.getLong(timestampIndex);
+                        String status = cursor.getString(statusIndex);
+                        int reviewCount = cursor.getInt(reviewCountIndex);
+
+                        records.add(new LearningRecord(id, dbUserId, wordId, score, timestamp, status, reviewCount));
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user learning records: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return records;
+    }
+
+    /**
+     * 获取用户的单词学习统计（按日期分组）
+     * @param userId 用户ID
+     * @return 日期到平均学习分数的映射
+     */
+    public Map<String, Integer> getUserDailyLearningStats(int userId) {
+        Map<String, Integer> stats = new HashMap<>();
+        Cursor cursor = null;
+
+        try {
+            // 按日期分组，计算每天的平均学习分数
+            String query = "SELECT strftime('%Y-%m-%d', datetime(" + DatabaseHelper.COLUMN_TIMESTAMP + "/1000, 'unixepoch')) as date, " +
+                    "AVG(" + DatabaseHelper.COLUMN_RECORD_SCORE + ") as avg_score FROM " + DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ?" +
+                    " GROUP BY date ORDER BY date";
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int dateIndex = cursor.getColumnIndex("date");
+                    int scoreIndex = cursor.getColumnIndex("avg_score");
+
+                    if (dateIndex != -1 && scoreIndex != -1) {
+                        String date = cursor.getString(dateIndex);
+                        int avgScore = Math.round(cursor.getFloat(scoreIndex));
+                        stats.put(date, avgScore);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user daily learning stats: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return stats;
+    }
+
+    /**
+     * 获取用户的单词记忆曲线数据
+     * @param userId 用户ID
+     * @param wordId 单词ID
+     * @return 学习记录列表（按时间排序）
+     */
+    public List<LearningRecord> getUserWordLearningRecords(int userId, int wordId) {
+        List<LearningRecord> records = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT * FROM " + DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ? AND " +
+                    DatabaseHelper.COLUMN_RECORD_WORD_ID + " = ? ORDER BY " + DatabaseHelper.COLUMN_TIMESTAMP;
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(wordId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int idIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_ID);
+                    int userIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_USER_ID);
+                    int wordIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_WORD_ID);
+                    int scoreIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_SCORE);
+                    int timestampIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_TIMESTAMP);
+                    int statusIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_STATUS);
+                    int reviewCountIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_REVIEW_COUNT);
+
+                    if (idIndex != -1 && userIdIndex != -1 && wordIdIndex != -1 && scoreIndex != -1 &&
+                            timestampIndex != -1 && statusIndex != -1 && reviewCountIndex != -1) {
+                        int id = cursor.getInt(idIndex);
+                        int dbUserId = cursor.getInt(userIdIndex);
+                        int dbWordId = cursor.getInt(wordIdIndex);
+                        int score = cursor.getInt(scoreIndex);
+                        long timestamp = cursor.getLong(timestampIndex);
+                        String status = cursor.getString(statusIndex);
+                        int reviewCount = cursor.getInt(reviewCountIndex);
+
+                        records.add(new LearningRecord(id, dbUserId, dbWordId, score, timestamp, status, reviewCount));
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user word learning records: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return records;
+    }
+
+    /**
+     * 获取用户的单词学习进度统计
+     * @param userId 用户ID
+     * @return 状态到单词数量的映射
+     */
+    public Map<String, Integer> getUserWordStatusStats(int userId) {
+        Map<String, Integer> stats = new HashMap<>();
+        Cursor cursor = null;
+
+        try {
+            // 按状态分组，统计每种状态的单词数量
+            String query = "SELECT " + DatabaseHelper.COLUMN_RECORD_STATUS + ", COUNT(DISTINCT " + DatabaseHelper.COLUMN_RECORD_WORD_ID + ") as count " +
+                    "FROM " + DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ?" +
+                    " GROUP BY " + DatabaseHelper.COLUMN_RECORD_STATUS;
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int statusIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_RECORD_STATUS);
+                    int countIndex = cursor.getColumnIndex("count");
+
+                    if (statusIndex != -1 && countIndex != -1) {
+                        String status = cursor.getString(statusIndex);
+                        int count = cursor.getInt(countIndex);
+                        stats.put(status, count);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user word status stats: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return stats;
+    }
+
+    /**
+     * 获取用户学习的单词总数
+     * @param userId 用户ID
+     * @return 学习的单词总数
+     */
+    public int getUserLearnedWordCount(int userId) {
+        int count = 0;
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT COUNT(DISTINCT " + DatabaseHelper.COLUMN_RECORD_WORD_ID + ") FROM " +
+                    DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ?";
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user learned word count: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * 获取用户的平均学习得分
+     * @param userId 用户ID
+     * @return 平均得分
+     */
+    public double getUserAverageLearningScore(int userId) {
+        double average = 0.0;
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT AVG(" + DatabaseHelper.COLUMN_RECORD_SCORE + ") FROM " +
+                    DatabaseHelper.TABLE_LEARNING_RECORDS +
+                    " WHERE " + DatabaseHelper.COLUMN_RECORD_USER_ID + " = ?";
+            cursor = database.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                if (!cursor.isNull(0)) {
+                    average = cursor.getDouble(0);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user average learning score: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return average;
     }
 }

@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REGISTER_REQUEST_CODE = 1;
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 检查数据库是否为空，如果为空则创建测试用户
+     * 检查数据库是否为空，如果为空则创建测试用户和测试学习记录
      */
     private void checkAndCreateTestUser() {
         // 使用dataManager检查数据库是否为空
@@ -143,7 +145,47 @@ public class MainActivity extends AppCompatActivity {
             // 创建测试用户
             User testUser = new User("user", "password", R.drawable.avatar1);
             dataManager.addUser(testUser);
-            Toast.makeText(this, "已创建测试用户: 用户名=user, 密码=password", Toast.LENGTH_SHORT).show();
+
+            // 获取创建的测试用户ID
+            List<User> users = dataManager.getAllUsers();
+            if (users != null && !users.isEmpty()) {
+                int userId = users.get(0).getId();
+
+                // 获取数据库中的单词列表
+                List<Word> words = dataManager.getAllWords();
+                if (words != null && !words.isEmpty()) {
+                    // 添加测试学习记录
+                    long now = System.currentTimeMillis();
+
+                    // 为前5个单词添加测试学习记录
+                    for (int i = 0; i < Math.min(5, words.size()); i++) {
+                        Word word = words.get(i);
+
+                        // 计算不同的日期（过去7天内的随机日期）
+                        long randomDaysAgo = (long) (Math.random() * 7) * 24 * 60 * 60 * 1000;
+                        long timestamp = now - randomDaysAgo;
+
+                        // 随机分数（60-100）
+                        int score = 60 + (int) (Math.random() * 41);
+
+                        // 根据分数设置学习状态
+                        String status;
+                        if (score >= 80) {
+                            status = "已掌握";
+                        } else if (score >= 40) {
+                            status = "学习中";
+                        } else {
+                            status = "待复习";
+                        }
+
+                        // 创建学习记录（使用自动设置时间戳的构造函数）
+                        LearningRecord record = new LearningRecord(userId, word.getId(), score, status);
+                        dataManager.addLearningRecord(record);
+                    }
+                }
+            }
+
+            Toast.makeText(this, "已创建测试用户和测试学习记录\n用户名=user, 密码=password", Toast.LENGTH_SHORT).show();
         }
     }
 

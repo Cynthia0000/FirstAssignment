@@ -27,6 +27,15 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
+    <!-- 修改用户名输入框 -->
+    <EditText
+        android:id="@+id/edit_username_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="输入新用户名"
+        android:inputType="text"
+        android:layout_marginBottom="8dp" />
+
     <TextView
         android:id="@+id/password_text"
         android:layout_width="match_parent"
@@ -39,6 +48,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="end">
+
+        <Button
+            android:id="@+id/update_username_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改用户名"
+            android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/delete_user_button"

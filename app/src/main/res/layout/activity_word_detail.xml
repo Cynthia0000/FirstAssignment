@@ -123,6 +123,42 @@
                 android:background="@drawable/button_background" />
         </LinearLayout>
 
+        <!-- 学习记录区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/edittext_background"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="评估您的掌握程度："
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp" />
+
+            <RatingBar
+                android:id="@+id/learningRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="3" />
+
+            <Button
+                android:id="@+id/recordLearningButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="记录学习情况"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background"
+                android:layout_marginTop="15dp" />
+        </LinearLayout>
+
         <!-- 返回按钮 -->
         <Button
             android:id="@+id/backButton"

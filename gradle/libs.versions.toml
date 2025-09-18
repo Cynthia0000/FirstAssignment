@@ -8,6 +8,7 @@ androidxJunit = "1.1.5"
 androidxEspressoCore = "3.5.1"
 androidGradlePlugin = "8.13.0"
 kotlin = "1.9.22"
+mpAndroidChart = "v3.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -17,6 +18,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }

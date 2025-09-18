@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 标题栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="学习统计"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 总体统计信息 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:id="@+id/totalLearnedWordsTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="总学习单词数: 0"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/avgScoreTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="平均学习分数: 0.0"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <!-- 记忆曲线图（折线图） -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/edittext_background"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="记忆曲线图"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/memoryCurveChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <!-- 单词状态分布（柱状图） -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/edittext_background"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="单词学习状态分布"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/wordStatusChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <!-- 操作按钮区域 - 修改为垂直布局使两个按钮宽度一致 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
+
+        <!-- 查看学习记录按钮 -->
+        <Button
+            android:id="@+id/viewLearningRecordsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:text="查看详细学习记录"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <!-- 返回按钮 -->
+        <Button
+            android:id="@+id/backToWordListButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="返回单词列表"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background" />
+    </LinearLayout>
+
+</LinearLayout>
