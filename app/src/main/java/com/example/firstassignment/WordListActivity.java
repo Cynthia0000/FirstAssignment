@@ -24,6 +24,7 @@ public class WordListActivity extends AppCompatActivity {
     private Button backToHomeButton;
     private List<Word> wordList = new ArrayList<>();
     private Button startLearningButton;
+    private DataManager dataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,9 @@ public class WordListActivity extends AppCompatActivity {
         customTitleBar = findViewById(R.id.customTitleBar);
         backToHomeButton = findViewById(R.id.backToHomeButton);
         startLearningButton = findViewById(R.id.startLearningButton);
+
+        // 初始化DataManager
+        dataManager = new DataManager(this);
 
         // 设置自定义标题栏的标题
         customTitleBar.setTitle("单词学习");
@@ -67,30 +71,71 @@ public class WordListActivity extends AppCompatActivity {
 
     // 准备单词数据
     private void prepareWordData() {
-        wordList.add(new Word("apple", "苹果", "水果", "An apple a day keeps the doctor away."));
-        wordList.add(new Word("banana", "香蕉", "水果", "I like eating bananas for breakfast."));
-        wordList.add(new Word("book", "书", "学习用品", "Reading a good book can expand your knowledge."));
-        wordList.add(new Word("computer", "电脑", "电子产品", "I use a computer to work every day."));
-        wordList.add(new Word("friend", "朋友", "人际关系", "A true friend is hard to find."));
-        wordList.add(new Word("happy", "快乐的", "情绪", "I feel very happy today."));
-        wordList.add(new Word("learn", "学习", "行为", "It's never too late to learn."));
-        wordList.add(new Word("music", "音乐", "艺术", "I enjoy listening to music in my free time."));
-        wordList.add(new Word("phone", "手机", "电子产品", "My phone is an essential part of my daily life."));
-        wordList.add(new Word("study", "学习", "行为", "We need to study hard to achieve our goals."));
+        wordList.clear();
+
+        // 从数据库加载单词数据
+        if (dataManager != null) {
+            List<com.example.firstassignment.Word> dbWords = dataManager.getAllWords();
+            if (dbWords != null && !dbWords.isEmpty()) {
+                for (com.example.firstassignment.Word dbWord : dbWords) {
+                    wordList.add(new Word(dbWord.getId(), dbWord.getWord(), dbWord.getTranslation(),
+                            dbWord.getCategory(), dbWord.getExample()));
+                }
+            } else {
+                // 如果数据库为空，添加一些初始单词数据
+                addInitialWords();
+            }
+        }
+    }
+
+    // 添加初始单词数据
+    private void addInitialWords() {
+        // 添加初始单词到数据库
+        dataManager.addWord("apple", "苹果", "水果", "An apple a day keeps the doctor away.");
+        dataManager.addWord("banana", "香蕉", "水果", "I like eating bananas for breakfast.");
+        dataManager.addWord("book", "书", "学习用品", "Reading a good book can expand your knowledge.");
+        dataManager.addWord("computer", "电脑", "电子产品", "I use a computer to work every day.");
+        dataManager.addWord("friend", "朋友", "人际关系", "A true friend is hard to find.");
+        dataManager.addWord("happy", "快乐的", "情绪", "I feel very happy today.");
+        dataManager.addWord("learn", "学习", "行为", "It's never too late to learn.");
+        dataManager.addWord("music", "音乐", "艺术", "I enjoy listening to music in my free time.");
+        dataManager.addWord("phone", "手机", "电子产品", "My phone is an essential part of my daily life.");
+        dataManager.addWord("study", "学习", "行为", "We need to study hard to achieve our goals.");
+
+        // 重新从数据库加载单词
+        prepareWordData();
     }
 
     // 单词实体类
     private class Word {
+        private int id;             // 单词ID，用于数据库存储
         private String word;        // 英文单词
         private String translation; // 中文翻译
         private String category;    // 单词类别
         private String example;     // 例句
 
         public Word(String word, String translation, String category, String example) {
+            this.id = -1; // 未设置ID，将由数据库生成
             this.word = word;
             this.translation = translation;
             this.category = category;
             this.example = example;
+        }
+
+        public Word(int id, String word, String translation, String category, String example) {
+            this.id = id;
+            this.word = word;
+            this.translation = translation;
+            this.category = category;
+            this.example = example;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getWord() {
@@ -170,6 +215,15 @@ public class WordListActivity extends AppCompatActivity {
             TextView translationTextView;
             TextView categoryTextView;
             TextView exampleTextView;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭数据库连接
+        if (dataManager != null) {
+            dataManager.close();
         }
     }
 }

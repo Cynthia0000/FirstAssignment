@@ -35,21 +35,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
-
-            <!-- 修复了此处的 gravity 问题 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="学习进度"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +53,6 @@
                     android:textSize="14sp"
                     android:textColor="@color/colorPrimary" />
             </LinearLayout>
-
             <ProgressBar
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
@@ -75,21 +70,18 @@
             android:background="@drawable/edittext_background"
             android:padding="15dp"
             android:layout_marginBottom="20dp">
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="已学习"
                     android:textSize="14sp"
                     android:textColor="@color/gray" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,28 +90,24 @@
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <View
+            <LinearLayout
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/gray"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="已掌握"
                     android:textSize="14sp"
                     android:textColor="@color/gray" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,28 +116,24 @@
                     android:textColor="@color/colorAccent"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <View
+            <LinearLayout
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/gray"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="剩余"
                     android:textSize="14sp"
                     android:textColor="@color/gray" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

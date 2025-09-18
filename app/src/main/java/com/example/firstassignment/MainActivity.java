@@ -17,10 +17,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private ImageView avatarImageView;
-    private int selectedAvatarResource = R.drawable.avatar_blue; // 默认使用蓝色头像
+    private int selectedAvatarResource = R.drawable.avatar1; // 默认使用头像1
     private Button loginButton;
     private Button registerButton;
     private CustomTitleBar customTitleBar;
+    private DataManager dataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
         customTitleBar = findViewById(R.id.customTitleBar);
+
+        // 初始化DataManager
+        dataManager = new DataManager(this);
+
+        // 检查数据库是否为空，如果为空则创建测试用户
+        checkAndCreateTestUser();
 
         // 设置自定义标题栏的标题
         customTitleBar.setTitle("用户登录");
@@ -73,29 +80,43 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
 
-                // 使用线程模拟登录过程
+                // 使用线程进行数据库验证
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            // 模拟网络请求延迟
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                            // 使用DataManager验证用户登录
+                            final User user = dataManager.verifyUserLogin(username, password);
 
-                        // 在主线程中更新UI
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressDialog.dismiss();
-                                // 跳转到第二个活动，并传递用户名和头像信息
-                                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                                intent.putExtra("username", username);
-                                intent.putExtra("avatarResource", selectedAvatarResource);
-                                startActivity(intent);
-                            }
-                        });
+                            // 在主线程中更新UI
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+
+                                    if (user != null) {
+                                        // 登录成功，跳转到第二个活动，并传递用户信息
+                                        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                                        intent.putExtra("userId", user.getId());
+                                        intent.putExtra("username", user.getUsername());
+                                        intent.putExtra("avatarResource", user.getAvatarResource());
+                                        startActivity(intent);
+                                    } else {
+                                        // 登录失败
+                                        Toast.makeText(MainActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(MainActivity.this, "登录失败，请稍后重试", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 }).start();
             }
@@ -111,6 +132,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 检查数据库是否为空，如果为空则创建测试用户
+     */
+    private void checkAndCreateTestUser() {
+        // 使用dataManager检查数据库是否为空
+        boolean isEmpty = dataManager.isDatabaseEmpty();
+
+        if (isEmpty) {
+            // 创建测试用户
+            User testUser = new User("user", "password", R.drawable.avatar1);
+            dataManager.addUser(testUser);
+            Toast.makeText(this, "已创建测试用户: 用户名=user, 密码=password", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // 处理从注册页面返回的结果
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -124,6 +160,15 @@ public class MainActivity extends AppCompatActivity {
             usernameEditText.setText(username);
             selectedAvatarResource = avatarResource;
             avatarImageView.setImageResource(avatarResource);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭数据库连接
+        if (dataManager != null) {
+            dataManager.close();
         }
     }
 }

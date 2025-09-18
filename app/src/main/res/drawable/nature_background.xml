@@ -22,7 +22,6 @@
         android:fillColor="#089995" />
 
     <!-- 装饰性圆形元素，模拟气泡或水滴效果 -->
-    <!-- 修改：移除了cx, cy, r属性中的android:前缀 -->
     <circle
         cx="100"
         cy="200"

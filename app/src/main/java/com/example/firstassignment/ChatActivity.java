@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -27,6 +28,8 @@ public class ChatActivity extends AppCompatActivity {
     private String username;
     private static final String TAG = "ChatActivity";
     private Handler handler;
+    private DataManager dataManager;
+    private int userId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +55,23 @@ public class ChatActivity extends AppCompatActivity {
             Intent intent = getIntent();
             if (intent != null) {
                 username = intent.getStringExtra("username");
-                Log.d(TAG, "Received data: username=" + username);
+                userId = intent.getIntExtra("userId", -1);
+                Log.d(TAG, "Received data: username=" + username + ", userId=" + userId);
             }
+
+            // 初始化DataManager
+            dataManager = new DataManager(this);
 
             // 初始化RecyclerView
             initRecyclerView();
 
-            // 显示欢迎消息
-            showWelcomeMessage();
+            // 从数据库加载历史消息
+            loadMessagesFromDatabase();
+
+            // 如果没有历史消息，显示欢迎消息
+            if (chatAdapter.getItemCount() == 0) {
+                showWelcomeMessage();
+            }
 
             // 设置发送按钮点击事件
             sendButton.setOnClickListener(new View.OnClickListener() {
@@ -106,12 +118,33 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
+     * 从数据库加载历史消息
+     */
+    private void loadMessagesFromDatabase() {
+        if (dataManager != null && userId != -1) {
+            List<Message> messages = dataManager.getAllMessages(userId);
+            if (messages != null && !messages.isEmpty()) {
+                for (Message message : messages) {
+                    chatAdapter.addMessage(message);
+                }
+                // 自动滚动到底部
+                messageRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+            }
+        }
+    }
+
+    /**
      * 显示欢迎消息
      */
     private void showWelcomeMessage() {
-        String welcomeMessage = "你好！我是AI助手，很高兴和你聊天。有什么我可以帮助你的吗？";
+        String welcomeMessage = "Hello! I'm your AI assistant. Nice to chat with you. How can I help you today?";
         Message message = new Message(welcomeMessage, Message.SENDER_AI);
         chatAdapter.addMessage(message);
+
+        // 保存到数据库
+        if (dataManager != null && userId != -1) {
+            dataManager.addMessage(message.getContent(), message.getSenderType(), userId);
+        }
 
         // 自动滚动到底部
         messageRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
@@ -126,6 +159,11 @@ public class ChatActivity extends AppCompatActivity {
             // 添加用户消息
             Message userMessage = new Message(content, Message.SENDER_USER);
             chatAdapter.addMessage(userMessage);
+
+            // 保存到数据库
+            if (dataManager != null && userId != -1) {
+                dataManager.addMessage(userMessage.getContent(), userMessage.getSenderType(), userId);
+            }
 
             // 清空输入框
             messageInput.setText("");
@@ -151,6 +189,11 @@ public class ChatActivity extends AppCompatActivity {
                 Message aiMessage = new Message(aiResponse, Message.SENDER_AI);
                 chatAdapter.addMessage(aiMessage);
 
+                // 保存到数据库
+                if (dataManager != null && userId != -1) {
+                    dataManager.addMessage(aiMessage.getContent(), aiMessage.getSenderType(), userId);
+                }
+
                 // 自动滚动到底部
                 messageRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
             }
@@ -166,7 +209,7 @@ public class ChatActivity extends AppCompatActivity {
         // 转换为小写以进行不区分大小写的匹配
         userMessage = userMessage.toLowerCase();
 
-        // 这里是一个简单的回复，实际应用再说吧
+        // 这里是一个简单的回复生成器，实际应用中可以连接到AI API
         if (userMessage.contains("hello") || userMessage.contains("hi") || userMessage.contains("hey")) {
             return "Hello! I'm your AI assistant. Nice to chat with you.";
         } else if (userMessage.contains("goodbye") || userMessage.contains("bye") || userMessage.contains("see you")) {
@@ -183,6 +226,15 @@ public class ChatActivity extends AppCompatActivity {
             return "My purpose is to assist and chat with you. I'm still learning and improving every day!";
         } else {
             return "Thanks for your message! This is a test response. In a real application, I would provide more targeted answers based on your questions.";
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭数据库连接
+        if (dataManager != null) {
+            dataManager.close();
         }
     }
 }

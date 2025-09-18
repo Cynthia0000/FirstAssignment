@@ -20,6 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private Button backButton;
     private CustomTitleBar customTitleBar;
+    private DataManager dataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +35,17 @@ public class RegisterActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         customTitleBar = findViewById(R.id.customTitleBar);
 
+        // 初始化DataManager
+        dataManager = new DataManager(this);
+
         // 设置自定义标题栏的标题
         customTitleBar.setTitle("用户注册");
 
-        // 设置头像点击事件，切换头像
+        // 设置头像点击切换
         avatarImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 简单切换头像示例
+                // 这里简化处理，实际可以有更多头像选择逻辑
                 if (selectedAvatarResource == R.drawable.avatar1) {
                     selectedAvatarResource = R.drawable.avatar2;
                 } else if (selectedAvatarResource == R.drawable.avatar2) {
@@ -72,15 +76,24 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                // 注册成功提示
-                Toast.makeText(RegisterActivity.this, "注册成功！", Toast.LENGTH_SHORT).show();
+                // 创建用户对象并存储到数据库
+                User newUser = new User(username, password, selectedAvatarResource);
+                boolean isSuccess = dataManager.addUser(newUser);
 
-                // 注册成功后返回登录界面，并传递用户名和头像信息
-                Intent intent = new Intent();
-                intent.putExtra("username", username);
-                intent.putExtra("avatarResource", selectedAvatarResource);
-                setResult(RESULT_OK, intent);
-                finish();
+                if (isSuccess) {
+                    // 注册成功提示
+                    Toast.makeText(RegisterActivity.this, "注册成功！", Toast.LENGTH_SHORT).show();
+
+                    // 注册成功后返回登录界面，并传递用户名和头像信息
+                    Intent intent = new Intent();
+                    intent.putExtra("username", username);
+                    intent.putExtra("avatarResource", selectedAvatarResource);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    // 注册失败提示
+                    Toast.makeText(RegisterActivity.this, "注册失败，用户名可能已存在", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -91,5 +104,14 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭数据库连接
+        if (dataManager != null) {
+            dataManager.close();
+        }
     }
 }

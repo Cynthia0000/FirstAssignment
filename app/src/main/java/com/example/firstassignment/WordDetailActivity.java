@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WordDetailActivity extends AppCompatActivity {
 
     private TextView wordTextView;
@@ -20,23 +23,8 @@ public class WordDetailActivity extends AppCompatActivity {
     private Button previousButton;
     private Button backButton;
     private CustomTitleBar customTitleBar;
-
-    private String[] words = {"apple", "banana", "book", "computer", "friend", "happy", "learn", "music", "phone", "study"};
-    private String[] translations = {"苹果", "香蕉", "书", "电脑", "朋友", "快乐的", "学习", "音乐", "手机", "学习"};
-    private String[] categories = {"水果", "水果", "学习用品", "电子产品", "人际关系", "情绪", "行为", "艺术", "电子产品", "行为"};
-    private String[] examples = {
-            "An apple a day keeps the doctor away.",
-            "I like eating bananas for breakfast.",
-            "Reading a good book can expand your knowledge.",
-            "I use a computer to work every day.",
-            "A true friend is hard to find.",
-            "I feel very happy today.",
-            "It's never too late to learn.",
-            "I enjoy listening to music in my free time.",
-            "My phone is an essential part of my daily life.",
-            "We need to study hard to achieve our goals."
-    };
-
+    private DataManager dataManager;
+    private List<Word> wordList;
     private int currentIndex = 0;
 
     @Override
@@ -54,6 +42,12 @@ public class WordDetailActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         customTitleBar = findViewById(R.id.customTitleBar);
 
+        // 初始化DataManager
+        dataManager = new DataManager(this);
+
+        // 从数据库加载单词列表
+        wordList = dataManager.getAllWords();
+
         // 设置自定义标题栏的标题
         customTitleBar.setTitle("单词学习");
 
@@ -70,7 +64,7 @@ public class WordDetailActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentIndex < words.length - 1) {
+                if (wordList != null && !wordList.isEmpty() && currentIndex < wordList.size() - 1) {
                     currentIndex++;
                     updateWordDisplay();
                 } else {
@@ -83,7 +77,7 @@ public class WordDetailActivity extends AppCompatActivity {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentIndex > 0) {
+                if (wordList != null && !wordList.isEmpty() && currentIndex > 0) {
                     currentIndex--;
                     updateWordDisplay();
                 } else {
@@ -104,18 +98,33 @@ public class WordDetailActivity extends AppCompatActivity {
         pronunciationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(WordDetailActivity.this, "正在播放发音: " + words[currentIndex], Toast.LENGTH_SHORT).show();
-                // 这里可以添加发音播放的逻辑
+                if (wordList != null && !wordList.isEmpty()) {
+                    String word = wordList.get(currentIndex).getWord();
+                    Toast.makeText(WordDetailActivity.this, "正在播放发音: " + word, Toast.LENGTH_SHORT).show();
+                    // 这里可以添加发音播放的逻辑
+                }
             }
         });
     }
 
     // 更新单词显示
     private void updateWordDisplay() {
-        wordTextView.setText(words[currentIndex]);
-        translationTextView.setText(translations[currentIndex]);
-        categoryTextView.setText(categories[currentIndex]);
-        exampleTextView.setText(examples[currentIndex]);
-        pronunciationTextView.setText("点击播放发音");
+        if (wordList != null && !wordList.isEmpty() && currentIndex < wordList.size()) {
+            Word word = wordList.get(currentIndex);
+            wordTextView.setText(word.getWord());
+            translationTextView.setText(word.getTranslation());
+            categoryTextView.setText(word.getCategory());
+            exampleTextView.setText(word.getExample());
+            pronunciationTextView.setText("点击播放发音");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭数据库连接，避免内存泄漏
+        if (dataManager != null) {
+            dataManager.close();
+        }
     }
 }

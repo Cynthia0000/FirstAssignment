@@ -9,19 +9,35 @@ public class Message {
     // 消息类型：AI发送
     public static final int SENDER_AI = 2;
 
+    private int id; // 消息ID，用于数据库存储
     private String content; // 消息内容
     private int senderType; // 发送者类型
     private long timestamp; // 消息时间戳
 
     /**
-     * 构造函数
+     * 构造函数 - 用于新建消息
      * @param content 消息内容
      * @param senderType 发送者类型
      */
     public Message(String content, int senderType) {
+        this.id = -1; // 未设置ID，将由数据库生成
         this.content = content;
         this.senderType = senderType;
         this.timestamp = System.currentTimeMillis();
+    }
+
+    /**
+     * 构造函数 - 用于从数据库加载消息
+     * @param id 消息ID
+     * @param content 消息内容
+     * @param senderType 发送者类型
+     * @param timestamp 消息时间戳
+     */
+    public Message(int id, String content, int senderType, long timestamp) {
+        this.id = id;
+        this.content = content;
+        this.senderType = senderType;
+        this.timestamp = timestamp;
     }
 
     /**
@@ -54,6 +70,22 @@ public class Message {
      */
     public void setSenderType(int senderType) {
         this.senderType = senderType;
+    }
+
+    /**
+     * 获取消息ID
+     * @return 消息ID
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * 设置消息ID
+     * @param id 消息ID
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**

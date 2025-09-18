@@ -19,6 +19,7 @@ public class SecondActivity extends AppCompatActivity {
     private Button changeAvatarButton;
     private Button startLearningButton;
     private Button chatButton;
+    private Button userManagementButton;
     private CustomTitleBar customTitleBar;
     private String username;
     private int currentAvatarResource;
@@ -35,6 +36,7 @@ public class SecondActivity extends AppCompatActivity {
         changeAvatarButton = findViewById(R.id.changeAvatarButton);
         startLearningButton = findViewById(R.id.startLearningButton);
         chatButton = findViewById(R.id.chatButton);
+        userManagementButton = findViewById(R.id.userManagementButton);
         customTitleBar = findViewById(R.id.customTitleBar);
 
         // 获取从MainActivity传递过来的用户名和头像信息
@@ -116,6 +118,16 @@ public class SecondActivity extends AppCompatActivity {
                 Intent intent = new Intent(SecondActivity.this, ChatActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("avatarResource", currentAvatarResource);
+                startActivity(intent);
+            }
+        });
+
+        // 用户管理按钮点击事件
+        userManagementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 创建Intent并启动UserListActivity
+                Intent intent = new Intent(SecondActivity.this, UserListActivity.class);
                 startActivity(intent);
             }
         });

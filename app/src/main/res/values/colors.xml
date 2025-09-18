@@ -19,4 +19,7 @@
 
     <!-- 背景相关颜色 -->
     <color name="backgroundOverlay">#80FFFFFF</color> <!-- 半透明白色，用于覆盖在背景图上 -->
+
+    <!-- 新增颜色定义 -->
+    <color name="red">#FF0000</color> <!-- 用于删除按钮 -->
 </resources>
